@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import pl.learnspringboot.restapi.model.Comment;
 import pl.learnspringboot.restapi.model.Post;
 import pl.learnspringboot.restapi.repository.CommentRepository;
 import pl.learnspringboot.restapi.repository.PostRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,5 +57,24 @@ public class PostService {
         return comments.stream()
                 .filter(comment -> comment.getPostId() == id)
                 .collect(Collectors.toList());
+    }
+
+    //Dodawanie postów
+    public Post addPost(Post post) {
+        return postRepository.save(post);
+    }
+
+    //Edytowanie postów
+    @Transactional  //jedna transakcja, a nie dwie
+    public Post editPost(Post post) {
+        Post postEdited = postRepository.findById(post.getId()).orElseThrow();
+        postEdited.setTitle(post.getTitle());
+        postEdited.setContent(post.getContent());
+        return postEdited; //hibernate sam zarządza edytowanymi encjami, nie trzeba tak: postRepository.save(post);
+    }
+
+    //Usuwanie posta
+    public void deletePost(long id) {
+        postRepository.deleteById(id);
     }
 }
