@@ -2,6 +2,8 @@ package pl.learnspringboot.restapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.learnspringboot.restapi.controller.dto.PostDto;
 import pl.learnspringboot.restapi.controller.dto.PostDtoMapper;
@@ -17,7 +19,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public List<PostDto> getPosts(@RequestParam(required = false) Integer page, Sort.Direction sort) {  //flaga na false, parametr nie jest wymagany / Integer ponieważ "opcjonalny"
+    public List<PostDto> getPosts(@RequestParam(required = false) Integer page, Sort.Direction sort,          //flaga na false, parametr nie jest wymagany / Integer ponieważ "opcjonalny"
+                                  @AuthenticationPrincipal UsernamePasswordAuthenticationToken user) {        //Posty/komentarze tylko określonego uzytkownika
         int pageNumber = page != null && page >= 0 ? page : 0; //aby liczba stron nie była ujemna       // parametr page nie może być nullem
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;                        //parametr direction nie może być nullem, ustawiamy domyślnie na ASC
         return PostDtoMapper.mapToPostDtos(postService.getPosts(pageNumber, sortDirection));
