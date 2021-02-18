@@ -1,6 +1,9 @@
 package pl.learnspringboot.restapi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -29,12 +32,14 @@ public class PostService {
         )); //Stronnicowanie / Dodajemy sortowanie
     }
 
+    @Cacheable("SinglePost")
     public Post getSinglePost(long id) {
         return postRepository.findById(id)
                 .orElseThrow();
     }
 
     //Pobieramy postronnicowane posty
+    @Cacheable("PostWithComments")
     public List<Post> getPostsWithComments(int page, Sort.Direction sort) {
         List<Post> allPosts = postRepository.findAllPosts(
                 PageRequest.of(page, PAGE_SIZE,
@@ -66,6 +71,7 @@ public class PostService {
 
     //Edytowanie postów
     @Transactional  //jedna transakcja, a nie dwie
+    @CachePut(cacheNames = "SinglePost", key = "#result.id")    //przeładowanie cacha przy edycji
     public Post editPost(Post post) {
         Post postEdited = postRepository.findById(post.getId()).orElseThrow();
         postEdited.setTitle(post.getTitle());
@@ -74,6 +80,7 @@ public class PostService {
     }
 
     //Usuwanie posta
+    @CacheEvict("SinglePost")               //przy usuwaniu posta, post z cache też zostanie usunięty
     public void deletePost(long id) {
         postRepository.deleteById(id);
     }

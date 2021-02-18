@@ -1,5 +1,6 @@
 package pl.learnspringboot.restapi.config;
 
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import static java.util.Collections.singletonList;
 
 @Configuration
 @EnableSwagger2
+@EnableCaching          //cachowanie
 public class Config {
 
     @Bean //tylko endpointy z naszej aplikacji
