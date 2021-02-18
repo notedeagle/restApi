@@ -39,7 +39,7 @@ public class PostService {
     }
 
     //Pobieramy postronnicowane posty
-    @Cacheable("PostWithComments")
+    @Cacheable("PostsWithComments")
     public List<Post> getPostsWithComments(int page, Sort.Direction sort) {
         List<Post> allPosts = postRepository.findAllPosts(
                 PageRequest.of(page, PAGE_SIZE,
