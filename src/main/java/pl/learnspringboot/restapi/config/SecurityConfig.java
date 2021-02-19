@@ -39,11 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
-                .withDefaultSchema() //utworzenie tabeli user przez Spring Security
-                .dataSource(dataSource)
-                .withUser("test")               //nick użytkownika
-                .password("{bcrypt}" + new BCryptPasswordEncoder().encode("test"))    //sposób kodowania hasła + hasło
-                .roles("user");   //rola użytkownika
+                //.withDefaultSchema() //utworzenie tabeli user przez Spring Security, mysql nie obsługuje
+                .dataSource(dataSource);
+                //.withUser("test")               //nick użytkownika
+                //.password("{bcrypt}" + new BCryptPasswordEncoder().encode("test"))    //sposób kodowania hasła + hasło
+                //.roles("user");   //rola użytkownika
     }
 
     //Konfiguracja http
